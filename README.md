@@ -7,6 +7,10 @@ Lakeflow declarativo.
 O bundle também publica o dashboard AI/BI **Projeto Farol · Portfólio**, com
 visões executivas de portfólio, pessoas e fornecedores.
 
+O diretório `minha-torre/` contém um bundle independente do Databricks App
+**Projeto Farol**, com as telas Projetos em risco e Simulador de realocação.
+Consulte [minha-torre/README.md](minha-torre/README.md) para validar e implantar.
+
 ## Pré-requisitos
 
 - Databricks CLI autenticado no perfil `DEFAULT`.
@@ -109,3 +113,4 @@ databricks bundle run vertice_farol --only medalhao+ --profile DEFAULT
 - `src/testes/`: dez contratos de qualidade executados depois do medalhão.
 - `src/setup/`: criação idempotente da infraestrutura Unity Catalog.
 - `llm/`: prompts operacionais adaptados para Codex.
+- `minha-torre/`: AppKit React/TypeScript somente leitura (Analytics, sem Genie).

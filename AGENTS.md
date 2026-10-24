@@ -32,3 +32,6 @@ If the CLI is not installed, see: https://docs.databricks.com/dev-tools/cli/inst
 - O target `dev` deve manter agendamentos pausados e não deve usar `mode: development`.
 - Não inicie uma execução se `vertice_farol` já estiver ativo.
 - Ao alterar a implementação, mantenha `llm/prompt_01.md` sincronizado.
+- Para mudanças em `minha-torre/`, leia `databricks-apps` e
+  `databricks-app-design`; preserve npm, o perfil `DEFAULT` e o acesso somente
+  leitura via Analytics. Genie pertence ao próximo prompt.

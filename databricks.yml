@@ -5,6 +5,10 @@ bundle:
 include:
   - resources/*.yml
 
+sync:
+  exclude:
+    - minha-torre/**
+
 variables:
   catalog:
     description: Catálogo Unity Catalog do Projeto Vértice
