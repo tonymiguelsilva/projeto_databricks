@@ -1,6 +1,6 @@
-# Declarative Automation Bundles Project
+# Projeto Farol · Vértice
 
-This project uses Declarative Automation Bundles (DABs) for deployment. Add project-specific instructions below.
+Este projeto usa Declarative Automation Bundles para ingestão e arquitetura medalhão no Databricks.
 
 ## For AI Agents: Use Databricks AI Tools
 
@@ -24,4 +24,11 @@ If the CLI is not installed, see: https://docs.databricks.com/dev-tools/cli/inst
 
 ## Project Instructions
 
-<!-- Add your project-specific instructions, coding conventions, or notes here -->
+- Use sempre `--profile DEFAULT` nos comandos Databricks.
+- Leia também `databricks-dabs`, `databricks-jobs`, `databricks-pipelines` e
+  `databricks-serverless` antes de alterar recursos correspondentes.
+- Nunca versione `.databricks/bundle/dev/variable-overrides.json` nem imprima segredos.
+- O catálogo do projeto é `lakehouse_vertice`.
+- O target `dev` deve manter agendamentos pausados e não deve usar `mode: development`.
+- Não inicie uma execução se `vertice_farol` já estiver ativo.
+- Ao alterar a implementação, mantenha `llm/prompt_01.md` sincronizado.

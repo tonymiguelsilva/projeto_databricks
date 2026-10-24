@@ -1,0 +1,7 @@
+{
+  "s3_endpoint": "https://SEU-PROJETO.storage.supabase.co/storage/v1/s3",
+  "s3_regiao": "us-east-1",
+  "s3_bucket": "NOME_EXATO_DO_BUCKET",
+  "s3_access_key_id": "PREENCHA_LOCALMENTE",
+  "s3_secret_access_key": "PREENCHA_LOCALMENTE"
+}
