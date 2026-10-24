@@ -1,21 +1,10 @@
-# Databricks
 .databricks/
-
-# Python
+build/
+dist/
 __pycache__/
-*.py[cod]
+*.egg-info
 .venv/
-venv/
-
-# IDEs e sistema operacional
-.idea/
-.vscode/
-.DS_Store
-Thumbs.db
-
-# Segredos e variáveis locais
-.env
-.env.*
-!.env.example
-*.pem
-*.key
+scratch/**
+!scratch/README.md
+**/explorations/**
+**/!explorations/README.md
