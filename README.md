@@ -19,3 +19,12 @@ Depois, confirme a conexão:
 ```powershell
 databricks current-user me
 ```
+
+## Databricks Bundle
+
+O alvo padrão `dev` usa o workspace configurado em `databricks.yml`.
+
+```powershell
+databricks bundle validate --profile DEFAULT
+databricks bundle deploy --profile DEFAULT
+```
