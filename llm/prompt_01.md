@@ -151,3 +151,9 @@ Estado após o `prompt_03`: o job possui também `status_com_ia`, depois de
 chamadas de IA para `(projeto_id, data_status)` já processados. Para executar o
 medalhão e todas as tarefas posteriores, use
 `databricks bundle run vertice_farol --only medalhao+ --profile DEFAULT`.
+
+Estado após o `prompt_04`: o bundle possui o recurso `dashboard_portfolio`,
+gerado por `scripts/gerar_dashboard.py` e publicado com o nome
+`Projeto Farol · Portfólio`. Seus oito datasets leem as tabelas gold por nome
+curto e `lakehouse_vertice.silver.entregas_fornecedor` por nome completo.
+No workspace atual, seu ID é `01f1cff17f241a16bad0b83c33ef1e8f`.

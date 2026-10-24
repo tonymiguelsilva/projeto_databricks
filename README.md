@@ -4,6 +4,9 @@ Bundle Databricks para ingerir arquivos do Supabase Storage, conferir a camada
 bronze e publicar sete tabelas silver e três tabelas gold em um pipeline
 Lakeflow declarativo.
 
+O bundle também publica o dashboard AI/BI **Projeto Farol · Portfólio**, com
+visões executivas de portfólio, pessoas e fornecedores.
+
 ## Pré-requisitos
 
 - Databricks CLI autenticado no perfil `DEFAULT`.
@@ -63,6 +66,20 @@ databricks bundle deploy --profile DEFAULT
 databricks bundle run vertice_farol --profile DEFAULT
 ```
 
+Para gerar e implantar o dashboard como código:
+
+```powershell
+python scripts/gerar_dashboard.py
+databricks bundle validate --strict --profile DEFAULT
+databricks bundle deploy --profile DEFAULT
+databricks bundle summary --profile DEFAULT
+```
+
+Dashboard implantado:
+
+- [Rascunho](https://dbc-d9922c6a-e0c3.cloud.databricks.com/sql/dashboardsv3/01f1cff17f241a16bad0b83c33ef1e8f)
+- [Publicado](https://dbc-d9922c6a-e0c3.cloud.databricks.com/dashboardsv3/01f1cff17f241a16bad0b83c33ef1e8f/published?w=1487041240090169)
+
 O target `dev` mantém o agendamento de segunda-feira às 6h pausado. O job usa
 serverless `STANDARD`, permite somente uma execução simultânea e contém:
 
@@ -83,6 +100,7 @@ databricks bundle run vertice_farol --only medalhao+ --profile DEFAULT
 ## Estrutura
 
 - `resources/`: job e pipeline declarados pelo bundle.
+- `scripts/gerar_dashboard.py`: gerador determinístico do dashboard AI/BI.
 - `src/ingestao/`: notebooks da BrasilAPI e do Supabase/S3.
 - `src/conferencia/`: contrato de contagens da bronze.
 - `src/silver/`: sete tabelas silver declarativas.
