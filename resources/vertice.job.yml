@@ -2,7 +2,7 @@ resources:
   jobs:
     vertice_farol:
       name: vertice_farol
-      description: Ingestão, conferência da bronze e transformação silver do Projeto Vértice.
+      description: Ingestão, conferência bronze, transformação silver/gold e testes do Projeto Vértice.
       performance_target: STANDARD
       max_concurrent_runs: 1
       tags:
@@ -53,3 +53,11 @@ resources:
             - task_key: conferencia_bronze
           pipeline_task:
             pipeline_id: ${resources.pipelines.vertice_medalhao.id}
+
+        - task_key: testes_de_qualidade
+          depends_on:
+            - task_key: medalhao
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../src/testes/testes.sql

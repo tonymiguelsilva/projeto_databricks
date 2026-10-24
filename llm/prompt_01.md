@@ -138,3 +138,9 @@ E no fim, numa tabela: cada tarefa, quanto tempo levou e o resultado.
 
 Se os placeholders do override local ainda não foram substituídos, pare antes
 do deploy e peça ao usuário que edite o arquivo. Não solicite as chaves no chat.
+
+Estado após o `prompt_02`: o mesmo pipeline também lê `src/gold/**` e publica
+`fato_projeto_semana`, `projeto_situacao_atual` e
+`utilizacao_pessoa_semana`. O job possui ainda `testes_de_qualidade`, depois de
+`medalhao`. Para validar essa parte sem recarregar a bronze, use
+`databricks bundle run vertice_farol --only medalhao,testes_de_qualidade --profile DEFAULT`.

@@ -1,7 +1,8 @@
 # Projeto Farol · Vértice
 
 Bundle Databricks para ingerir arquivos do Supabase Storage, conferir a camada
-bronze e publicar sete tabelas silver em um pipeline Lakeflow declarativo.
+bronze e publicar sete tabelas silver e três tabelas gold em um pipeline
+Lakeflow declarativo.
 
 ## Pré-requisitos
 
@@ -69,6 +70,13 @@ serverless `STANDARD`, permite somente uma execução simultânea e contém:
 2. `ingestao_data_lake`
 3. `conferencia_bronze`
 4. `medalhao`
+5. `testes_de_qualidade`
+
+Para recalcular somente silver/gold e executar os testes, sem recarregar a bronze:
+
+```powershell
+databricks bundle run vertice_farol --only medalhao,testes_de_qualidade --profile DEFAULT
+```
 
 ## Estrutura
 
@@ -76,5 +84,7 @@ serverless `STANDARD`, permite somente uma execução simultânea e contém:
 - `src/ingestao/`: notebooks da BrasilAPI e do Supabase/S3.
 - `src/conferencia/`: contrato de contagens da bronze.
 - `src/silver/`: sete tabelas silver declarativas.
+- `src/gold/`: fotografia atual, evolução semanal e utilização de pessoas.
+- `src/testes/`: dez contratos de qualidade executados depois do medalhão.
 - `src/setup/`: criação idempotente da infraestrutura Unity Catalog.
-- `llm/prompt_01.md`: prompt operacional adaptado para Codex.
+- `llm/`: prompts operacionais adaptados para Codex.
