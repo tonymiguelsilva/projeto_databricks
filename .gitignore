@@ -1,0 +1,21 @@
+# Databricks
+.databricks/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# IDEs e sistema operacional
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Segredos e variáveis locais
+.env
+.env.*
+!.env.example
+*.pem
+*.key
