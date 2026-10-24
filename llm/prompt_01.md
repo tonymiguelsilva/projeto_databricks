@@ -11,6 +11,17 @@ As credenciais do Supabase ficam exclusivamente em
 `config/variable-overrides.example.json`. Nunca mostre, imprima ou versione os
 valores de `s3_access_key_id` e `s3_secret_access_key`.
 
+Antes do deploy, execute `python scripts/sync_secrets.py --profile DEFAULT`.
+Esse comando cria/atualiza o secret scope `vertice`. O job usa variáveis de
+ambiente serverless com referências `{{secrets/vertice/...}}`, nunca valores
+de credenciais em `base_parameters`.
+
+As credenciais fornecidas para o S3 são somente leitura e o bucket contém 18
+dos 20 arquivos Excel. Os cronogramas `PRJ-020` e `PRJ-021` foram reproduzidos
+com o gerador oficial e seed 42 e ficam em
+`/Volumes/lakehouse_vertice/bronze/raw/_complementos/excel`. A ingestão deve
+copiá-los para `raw/excel` depois de sincronizar o bucket.
+
 Antes do deploy:
 
 1. confira se os cinco valores do override local foram preenchidos e não são placeholders;
@@ -47,7 +58,7 @@ Use CREATE OR REFRESH MATERIALIZED VIEW (nunca CREATE OR REPLACE, que não
 existe no pipeline) e CREATE TEMPORARY VIEW para as visões intermediárias.
 Leia a bronze pelo nome completo lakehouse_vertice.bronze.<tabela>; dentro do
 pipeline, referencie as tabelas silver só pelo nome. COMMENT em toda tabela.
-Siga a tabela de sujeiras da seção 3 do CLAUDE.md.
+Siga as regras de limpeza detalhadas neste prompt e as convenções do `AGENTS.md`.
 
 Um arquivo por assunto em src/silver/:
 

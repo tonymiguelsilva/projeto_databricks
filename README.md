@@ -30,6 +30,21 @@ Edite `.databricks/bundle/dev/variable-overrides.json` e preencha:
 
 Não cole essas credenciais em notebooks, YAML, issues ou mensagens.
 
+Sincronize as duas chaves com o secret scope `vertice` antes do deploy:
+
+```powershell
+python scripts/sync_secrets.py --profile DEFAULT
+```
+
+O job recebe apenas referências `{{secrets/vertice/...}}`; os valores não ficam
+armazenados nos parâmetros da tarefa.
+
+As credenciais S3 atuais são somente leitura. O bucket contém 18 dos 20
+cronogramas Excel do seed 42; os arquivos de `PRJ-020` e `PRJ-021`, reproduzidos
+pelo gerador oficial, ficam em
+`/Volumes/lakehouse_vertice/bronze/raw/_complementos/excel` e são incorporados
+automaticamente pela ingestão.
+
 ## Criar a infraestrutura
 
 ```powershell

@@ -18,6 +18,15 @@ resources:
             dependencies:
               - boto3==1.40.18
               - requests==2.32.5
+      environment_variables:
+        - environment_variables_key: supabase
+          spec:
+            variables:
+              S3_ENDPOINT: ${var.s3_endpoint}
+              AWS_DEFAULT_REGION: ${var.s3_regiao}
+              S3_BUCKET: ${var.s3_bucket}
+              AWS_ACCESS_KEY_ID: "{{secrets/vertice/s3-access-key-id}}"
+              AWS_SECRET_ACCESS_KEY: "{{secrets/vertice/s3-secret-access-key}}"
       tasks:
         - task_key: ingestao_feriados
           environment_key: padrao
@@ -26,14 +35,9 @@ resources:
 
         - task_key: ingestao_data_lake
           environment_key: padrao
+          environment_variables_key: supabase
           notebook_task:
             notebook_path: ../src/ingestao/02_ingestao_boto3.py
-            base_parameters:
-              S3_ENDPOINT: ${var.s3_endpoint}
-              AWS_DEFAULT_REGION: ${var.s3_regiao}
-              S3_BUCKET: ${var.s3_bucket}
-              AWS_ACCESS_KEY_ID: ${var.s3_access_key_id}
-              AWS_SECRET_ACCESS_KEY: ${var.s3_secret_access_key}
 
         - task_key: conferencia_bronze
           depends_on:

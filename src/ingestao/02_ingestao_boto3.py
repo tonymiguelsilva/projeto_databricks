@@ -141,6 +141,21 @@ for key in arquivos:
     total += baixar(key)
 print(f"{len(arquivos)} arquivos, {total/1e6:.1f} MB no raw")
 
+# O bucket fornecido tem 18 dos 20 cronogramas Excel e as credenciais são
+# somente leitura. Os dois arquivos ausentes, reproduzidos pelo gerador oficial
+# com seed 42, ficam preservados no volume e são acrescentados a cada execução.
+COMPLEMENTOS_EXCEL = f"{RAW}/_complementos/excel"
+try:
+    complementos = [f.path for f in dbutils.fs.ls(COMPLEMENTOS_EXCEL)
+                    if f.path.lower().endswith(".xlsx")]
+except Exception:
+    complementos = []
+
+for origem in complementos:
+    dbutils.fs.cp(origem, f"{RAW}/excel/{origem.rsplit('/', 1)[-1]}")
+
+print(f"{len(complementos)} arquivos Excel complementares adicionados ao raw")
+
 # COMMAND ----------
 
 # MAGIC %md
