@@ -144,3 +144,10 @@ Estado após o `prompt_02`: o mesmo pipeline também lê `src/gold/**` e publica
 `utilizacao_pessoa_semana`. O job possui ainda `testes_de_qualidade`, depois de
 `medalhao`. Para validar essa parte sem recarregar a bronze, use
 `databricks bundle run vertice_farol --only medalhao,testes_de_qualidade --profile DEFAULT`.
+
+Estado após o `prompt_03`: o job possui também `status_com_ia`, depois de
+`medalhao` e em paralelo com `testes_de_qualidade`. A tarefa mantém
+`lakehouse_vertice.gold.status_estruturado` incrementalmente, sem repetir
+chamadas de IA para `(projeto_id, data_status)` já processados. Para executar o
+medalhão e todas as tarefas posteriores, use
+`databricks bundle run vertice_farol --only medalhao+ --profile DEFAULT`.

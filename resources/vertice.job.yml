@@ -1,8 +1,13 @@
+# Job completo do Projeto Farol:
+# 1-2. ingestao_feriados e ingestao_data_lake executam em paralelo;
+# 3. conferencia_bronze valida as nove tabelas ingeridas;
+# 4. medalhao publica as camadas silver e gold;
+# 5-6. testes_de_qualidade e status_com_ia executam em paralelo.
 resources:
   jobs:
     vertice_farol:
       name: vertice_farol
-      description: Ingestão, conferência bronze, transformação silver/gold e testes do Projeto Vértice.
+      description: Ingestão, conferência bronze, transformação silver/gold, testes e estruturação de status com IA do Projeto Vértice.
       performance_target: STANDARD
       max_concurrent_runs: 1
       tags:
@@ -61,3 +66,11 @@ resources:
             warehouse_id: ${var.warehouse_id}
             file:
               path: ../src/testes/testes.sql
+
+        - task_key: status_com_ia
+          depends_on:
+            - task_key: medalhao
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../src/ia/status_estruturado.sql

@@ -71,11 +71,13 @@ serverless `STANDARD`, permite somente uma execução simultânea e contém:
 3. `conferencia_bronze`
 4. `medalhao`
 5. `testes_de_qualidade`
+6. `status_com_ia`
 
-Para recalcular somente silver/gold e executar os testes, sem recarregar a bronze:
+Para recalcular silver/gold e executar em paralelo os testes e a classificação
+incremental dos status, sem recarregar a bronze:
 
 ```powershell
-databricks bundle run vertice_farol --only medalhao,testes_de_qualidade --profile DEFAULT
+databricks bundle run vertice_farol --only medalhao+ --profile DEFAULT
 ```
 
 ## Estrutura
@@ -85,6 +87,7 @@ databricks bundle run vertice_farol --only medalhao,testes_de_qualidade --profil
 - `src/conferencia/`: contrato de contagens da bronze.
 - `src/silver/`: sete tabelas silver declarativas.
 - `src/gold/`: fotografia atual, evolução semanal e utilização de pessoas.
+- `src/ia/`: classificação incremental do texto livre dos status.
 - `src/testes/`: dez contratos de qualidade executados depois do medalhão.
 - `src/setup/`: criação idempotente da infraestrutura Unity Catalog.
 - `llm/`: prompts operacionais adaptados para Codex.
