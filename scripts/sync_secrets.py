@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -14,9 +16,30 @@ OVERRIDE = ROOT / ".databricks/bundle/dev/variable-overrides.json"
 SCOPE = "vertice"
 
 
+def localizar_cli() -> str:
+    encontrado = shutil.which("databricks")
+    if encontrado:
+        return encontrado
+
+    local_app_data = os.environ.get("LOCALAPPDATA")
+    if local_app_data:
+        pacotes = Path(local_app_data) / "Microsoft/WinGet/Packages"
+        candidatos = sorted(
+            pacotes.glob("Databricks.DatabricksCLI_*/databricks.exe"),
+            reverse=True,
+        )
+        if candidatos:
+            return str(candidatos[0])
+
+    raise SystemExit(
+        "Databricks CLI não encontrado. Instale com "
+        "'winget install Databricks.DatabricksCLI' ou reabra o PowerShell."
+    )
+
+
 def executar(args: list[str], profile: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
-        ["databricks", *args, "--profile", profile],
+        [localizar_cli(), *args, "--profile", profile],
         text=True,
         capture_output=True,
         check=False,
