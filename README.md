@@ -8,7 +8,7 @@ O bundle também publica o dashboard AI/BI **Projeto Farol · Portfólio**, com
 visões executivas de portfólio, pessoas e fornecedores.
 
 O diretório `minha-torre/` contém um bundle independente do Databricks App
-**Projeto Farol**, com as telas Projetos em risco e Simulador de realocação.
+**Projeto Farol**, com as telas Projetos em risco, Simulador de realocação e Perguntar.
 Consulte [minha-torre/README.md](minha-torre/README.md) para validar e implantar.
 
 ## Pré-requisitos
@@ -93,6 +93,18 @@ serverless `STANDARD`, permite somente uma execução simultânea e contém:
 4. `medalhao`
 5. `testes_de_qualidade`
 6. `status_com_ia`
+7. `metricas_governadas`
+
+A tarefa final publica `lakehouse_vertice.gold.mv_projetos`, fonte governada dos
+KPIs usados pelo Genie [Farol · Diretoria](https://dbc-d9922c6a-e0c3.cloud.databricks.com/genie/rooms/01f1cff8027f18b189265b533b804bdd?w=1487041240090169).
+
+Para regenerar e avaliar o agente:
+
+```powershell
+python scripts/gerar_genie.py --profile DEFAULT
+databricks bundle deploy --profile DEFAULT
+python scripts/genie.py benchmark "Farol · Diretoria" tests/genie-benchmark-diretoria.json --profile DEFAULT
+```
 
 Para recalcular silver/gold e executar em paralelo os testes e a classificação
 incremental dos status, sem recarregar a bronze:
@@ -110,7 +122,8 @@ databricks bundle run vertice_farol --only medalhao+ --profile DEFAULT
 - `src/silver/`: sete tabelas silver declarativas.
 - `src/gold/`: fotografia atual, evolução semanal e utilização de pessoas.
 - `src/ia/`: classificação incremental do texto livre dos status.
+- `src/metricas/`: Metric View com os KPIs governados do portfólio.
 - `src/testes/`: dez contratos de qualidade executados depois do medalhão.
 - `src/setup/`: criação idempotente da infraestrutura Unity Catalog.
 - `llm/`: prompts operacionais adaptados para Codex.
-- `minha-torre/`: AppKit React/TypeScript somente leitura (Analytics, sem Genie).
+- `minha-torre/`: AppKit React/TypeScript somente leitura com Analytics e Genie.

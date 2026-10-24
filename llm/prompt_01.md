@@ -157,3 +157,9 @@ gerado por `scripts/gerar_dashboard.py` e publicado com o nome
 `Projeto Farol · Portfólio`. Seus oito datasets leem as tabelas gold por nome
 curto e `lakehouse_vertice.silver.entregas_fornecedor` por nome completo.
 No workspace atual, seu ID é `01f1cff17f241a16bad0b83c33ef1e8f`.
+
+Estado após o `prompt_agente`: o job termina em `metricas_governadas`, que
+publica `lakehouse_vertice.gold.mv_projetos`. O bundle gerencia o Genie
+`Farol · Diretoria`, ID `01f1cff8027f18b189265b533b804bdd`, gerado por
+`scripts/gerar_genie.py`. O app `minha-torre` oferece a tela Perguntar via
+OAuth em nome do usuário. O score permanece opcional e atualmente não existe.

@@ -1,9 +1,10 @@
 import { createBrowserRouter, NavLink, Outlet, RouterProvider } from 'react-router';
 import { useState } from 'react';
 import { Button, Sheet, SheetContent, SheetHeader, SheetTitle, useIsMobile } from '@databricks/appkit-ui/react';
-import { Menu, Radar, Users } from 'lucide-react';
+import { Menu, MessageCircle, Radar, Users } from 'lucide-react';
 import { ProjetosRiscoPage } from './pages/ProjetosRiscoPage';
 import { SimuladorPage } from './pages/SimuladorPage';
+import { PerguntarPage } from './pages/PerguntarPage';
 
 const link = ({ isActive }: { isActive: boolean }) =>
   `flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`;
@@ -12,6 +13,7 @@ function Navegacao({ fechar }: { fechar?: () => void }) {
   return <nav className="flex flex-col gap-1 md:flex-row">
     <NavLink to="/" end className={link} onClick={fechar}><Radar className="h-4 w-4" />Projetos em risco</NavLink>
     <NavLink to="/simulador" className={link} onClick={fechar}><Users className="h-4 w-4" />Simulador</NavLink>
+    <NavLink to="/perguntar" className={link} onClick={fechar}><MessageCircle className="h-4 w-4" />Perguntar</NavLink>
   </nav>;
 }
 
@@ -33,6 +35,7 @@ function Layout() {
 const router = createBrowserRouter([{ element: <Layout />, children: [
   { path: '/', element: <ProjetosRiscoPage /> },
   { path: '/simulador', element: <SimuladorPage /> },
+  { path: '/perguntar', element: <PerguntarPage /> },
 ]}]);
 
 export default function App() { return <RouterProvider router={router} />; }

@@ -33,5 +33,7 @@ If the CLI is not installed, see: https://docs.databricks.com/dev-tools/cli/inst
 - Não inicie uma execução se `vertice_farol` já estiver ativo.
 - Ao alterar a implementação, mantenha `llm/prompt_01.md` sincronizado.
 - Para mudanças em `minha-torre/`, leia `databricks-apps` e
-  `databricks-app-design`; preserve npm, o perfil `DEFAULT` e o acesso somente
-  leitura via Analytics. Genie pertence ao próximo prompt.
+  `databricks-app-design`; preserve npm, o perfil `DEFAULT`, Analytics e Genie.
+- Para `gold.mv_projetos` ou `Farol · Diretoria`, leia também
+  `databricks-metric-views` e `databricks-genie-agents`. O score é opcional e
+  nunca pode ser referenciado pelo Genie ou pelo app quando a tabela não existir.

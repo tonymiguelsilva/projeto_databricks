@@ -4,6 +4,10 @@ bundle:
 variables:
   sql_warehouse_id:
     description: SQL Warehouse ID
+  genie_space_id:
+    description: Genie Space ID
+  genie_space_name:
+    description: Genie Space name
 
 resources:
   apps:
@@ -15,9 +19,8 @@ resources:
       # Start the app automatically on deploy.
       lifecycle:
         started: true
-      # Uncomment to enable on behalf of user API scopes. Available scopes: sql, genie, files, model-serving
-      # user_api_scopes:
-      #   - sql
+      user_api_scopes:
+        - genie
 
       # The resources which this app has access to.
       resources:
@@ -25,6 +28,11 @@ resources:
           sql_warehouse:
             id: ${var.sql_warehouse_id}
             permission: CAN_USE
+        - name: genie-space
+          genie_space:
+            name: ${var.genie_space_name}
+            space_id: ${var.genie_space_id}
+            permission: CAN_RUN
 
 targets:
   default:
@@ -34,3 +42,5 @@ targets:
 
     variables:
       sql_warehouse_id: a25e41e310648f85
+      genie_space_id: 01f1cff8027f18b189265b533b804bdd
+      genie_space_name: Farol · Diretoria
