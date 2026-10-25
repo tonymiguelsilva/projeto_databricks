@@ -17,6 +17,17 @@
       ]
     },
     {
+      "name": "ds_estouro",
+      "displayName": "Maiores estouros previstos",
+      "queryLines": [
+        "SELECT projeto, cliente, ferramenta, situacao, estouro_previsto\n",
+        "FROM projeto_situacao_atual\n",
+        "WHERE status = 'em_andamento' AND estouro_previsto > 0\n",
+        "ORDER BY estouro_previsto DESC\n",
+        "LIMIT 12\n"
+      ]
+    },
+    {
       "name": "ds_projetos",
       "displayName": "Projetos em andamento hoje",
       "queryLines": [
@@ -117,12 +128,141 @@
         {
           "widget": {
             "name": "titulo-portfolio",
-            "textbox_spec": "# Projeto Farol · Portfólio\n\n**Quais projetos estão atrasados, de quais clientes, e quanto isso custa?** Dados integrados e testados com referência em 16/10/2026."
+            "textbox_spec": "# Projeto Farol · Portfólio\n\n**Onde agir agora para proteger prazo, custo e margem?** Fotografia executiva validada em **16/10/2026**."
           },
           "position": {
             "x": 0,
             "y": 0,
             "width": 12,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "filtro-cliente",
+            "queries": [
+              {
+                "name": "filtro-cliente_query",
+                "query": {
+                  "datasetName": "ds_projetos",
+                  "fields": [
+                    {
+                      "name": "cliente",
+                      "expression": "`cliente`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "cliente",
+                    "displayName": "Cliente",
+                    "queryName": "filtro-cliente_query"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Cliente"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 4,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "filtro-situacao",
+            "queries": [
+              {
+                "name": "filtro-situacao_query",
+                "query": {
+                  "datasetName": "ds_projetos",
+                  "fields": [
+                    {
+                      "name": "situacao",
+                      "expression": "`situacao`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "situacao",
+                    "displayName": "Situação",
+                    "queryName": "filtro-situacao_query"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Situação"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 4,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "filtro-ferramenta",
+            "queries": [
+              {
+                "name": "filtro-ferramenta_query",
+                "query": {
+                  "datasetName": "ds_projetos",
+                  "fields": [
+                    {
+                      "name": "ferramenta",
+                      "expression": "`ferramenta`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "ferramenta",
+                    "displayName": "Ferramenta",
+                    "queryName": "filtro-ferramenta_query"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Ferramenta"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 2,
+            "width": 4,
             "height": 2
           }
         },
@@ -170,101 +310,7 @@
           },
           "position": {
             "x": 0,
-            "y": 2,
-            "width": 3,
-            "height": 4
-          }
-        },
-        {
-          "widget": {
-            "name": "kpi-spi",
-            "queries": [
-              {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "ds_kpis",
-                  "fields": [
-                    {
-                      "name": "spi",
-                      "expression": "`spi`"
-                    }
-                  ],
-                  "disaggregated": true
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "counter",
-              "encodings": {
-                "value": {
-                  "fieldName": "spi",
-                  "displayName": "SPI da carteira",
-                  "format": {
-                    "type": "number-plain",
-                    "decimalPlaces": {
-                      "type": "max",
-                      "places": 2
-                    }
-                  }
-                }
-              },
-              "frame": {
-                "showTitle": true,
-                "title": "SPI da carteira"
-              }
-            }
-          },
-          "position": {
-            "x": 3,
-            "y": 2,
-            "width": 3,
-            "height": 4
-          }
-        },
-        {
-          "widget": {
-            "name": "kpi-cpi",
-            "queries": [
-              {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "ds_kpis",
-                  "fields": [
-                    {
-                      "name": "cpi",
-                      "expression": "`cpi`"
-                    }
-                  ],
-                  "disaggregated": true
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "counter",
-              "encodings": {
-                "value": {
-                  "fieldName": "cpi",
-                  "displayName": "CPI da carteira",
-                  "format": {
-                    "type": "number-plain",
-                    "decimalPlaces": {
-                      "type": "max",
-                      "places": 2
-                    }
-                  }
-                }
-              },
-              "frame": {
-                "showTitle": true,
-                "title": "CPI da carteira"
-              }
-            }
-          },
-          "position": {
-            "x": 6,
-            "y": 2,
+            "y": 4,
             "width": 3,
             "height": 4
           }
@@ -312,8 +358,102 @@
             }
           },
           "position": {
+            "x": 3,
+            "y": 4,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi-spi",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_kpis",
+                  "fields": [
+                    {
+                      "name": "spi",
+                      "expression": "`spi`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "spi",
+                  "displayName": "SPI da carteira",
+                  "format": {
+                    "type": "number-plain",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "SPI da carteira"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 4,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi-cpi",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_kpis",
+                  "fields": [
+                    {
+                      "name": "cpi",
+                      "expression": "`cpi`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "cpi",
+                  "displayName": "CPI da carteira",
+                  "format": {
+                    "type": "number-plain",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "CPI da carteira"
+              }
+            }
+          },
+          "position": {
             "x": 9,
-            "y": 2,
+            "y": 4,
             "width": 3,
             "height": 4
           }
@@ -356,8 +496,8 @@
           },
           "position": {
             "x": 0,
-            "y": 6,
-            "width": 4,
+            "y": 8,
+            "width": 3,
             "height": 4
           }
         },
@@ -398,9 +538,9 @@
             }
           },
           "position": {
-            "x": 4,
-            "y": 6,
-            "width": 4,
+            "x": 3,
+            "y": 8,
+            "width": 3,
             "height": 4
           }
         },
@@ -428,7 +568,7 @@
               "encodings": {
                 "value": {
                   "fieldName": "projetos_melancia",
-                  "displayName": "Projetos melancia",
+                  "displayName": "Falsos verdes",
                   "format": {
                     "type": "number-plain"
                   }
@@ -436,14 +576,61 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Projetos melancia"
+                "title": "Falsos verdes"
               }
             }
           },
           "position": {
-            "x": 8,
-            "y": 6,
-            "width": 4,
+            "x": 6,
+            "y": 8,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi-margem",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_kpis",
+                  "fields": [
+                    {
+                      "name": "margem_projetada",
+                      "expression": "`margem_projetada`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "margem_projetada",
+                  "displayName": "Margem projetada",
+                  "format": {
+                    "type": "number-percent",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 1
+                    }
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Margem projetada"
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 8,
+            "width": 3,
             "height": 4
           }
         },
@@ -454,7 +641,7 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "ds_projetos",
+                  "datasetName": "ds_estouro",
                   "fields": [
                     {
                       "name": "projeto",
@@ -492,7 +679,7 @@
                   "scale": {
                     "type": "quantitative"
                   },
-                  "displayName": "Estouro previsto por projeto",
+                  "displayName": "Onde está concentrado o estouro previsto?",
                   "format": {
                     "type": "number-currency",
                     "currencyCode": "BRL",
@@ -527,13 +714,13 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Estouro previsto por projeto"
+                "title": "Onde está concentrado o estouro previsto?"
               }
             }
           },
           "position": {
             "x": 0,
-            "y": 10,
+            "y": 12,
             "width": 7,
             "height": 8
           }
@@ -608,15 +795,47 @@
                   "displayName": "Situação"
                 }
               },
+              "annotations": [
+                {
+                  "type": "vertical-line",
+                  "encodings": {
+                    "x": {
+                      "dataValue": "0.9",
+                      "dataType": "DOUBLE"
+                    },
+                    "label": {
+                      "value": "Limite de prazo"
+                    },
+                    "color": {
+                      "value": "#F6C344"
+                    }
+                  }
+                },
+                {
+                  "type": "horizontal-line",
+                  "encodings": {
+                    "y": {
+                      "dataValue": "0.9",
+                      "dataType": "DOUBLE"
+                    },
+                    "label": {
+                      "value": "Limite de custo"
+                    },
+                    "color": {
+                      "value": "#F6C344"
+                    }
+                  }
+                }
+              ],
               "frame": {
                 "showTitle": true,
-                "title": "Prazo × custo: cada ponto é um projeto"
+                "title": "Quais projetos combinam risco de prazo e custo?"
               }
             }
           },
           "position": {
             "x": 7,
-            "y": 10,
+            "y": 12,
             "width": 5,
             "height": 8
           }
@@ -674,15 +893,32 @@
                   ]
                 }
               },
+              "annotations": [
+                {
+                  "type": "horizontal-line",
+                  "encodings": {
+                    "y": {
+                      "dataValue": "0.9",
+                      "dataType": "DOUBLE"
+                    },
+                    "label": {
+                      "value": "Limite de atenção"
+                    },
+                    "color": {
+                      "value": "#F6C344"
+                    }
+                  }
+                }
+              ],
               "frame": {
                 "showTitle": true,
-                "title": "SPI e CPI da carteira, semana a semana"
+                "title": "A carteira está melhorando ou piorando?"
               }
             }
           },
           "position": {
             "x": 0,
-            "y": 18,
+            "y": 20,
             "width": 12,
             "height": 6
           }
@@ -703,10 +939,6 @@
                     {
                       "name": "cliente",
                       "expression": "`cliente`"
-                    },
-                    {
-                      "name": "ferramenta",
-                      "expression": "`ferramenta`"
                     },
                     {
                       "name": "situacao",
@@ -737,16 +969,8 @@
                       "expression": "`estouro_previsto`"
                     },
                     {
-                      "name": "margem_projetada",
-                      "expression": "`margem_projetada`"
-                    },
-                    {
                       "name": "atraso_projetado_dias",
                       "expression": "`atraso_projetado_dias`"
-                    },
-                    {
-                      "name": "termino_projetado",
-                      "expression": "`termino_projetado`"
                     }
                   ],
                   "disaggregated": true
@@ -765,10 +989,6 @@
                   {
                     "fieldName": "cliente",
                     "displayName": "Cliente"
-                  },
-                  {
-                    "fieldName": "ferramenta",
-                    "displayName": "Ferramenta"
                   },
                   {
                     "fieldName": "situacao",
@@ -798,15 +1018,15 @@
                   },
                   {
                     "fieldName": "farol_do_gerente",
-                    "displayName": "Farol do gerente"
+                    "displayName": "Farol informado"
                   },
                   {
                     "fieldName": "farol_calculado",
-                    "displayName": "Farol pelo número"
+                    "displayName": "Farol calculado"
                   },
                   {
                     "fieldName": "melancia",
-                    "displayName": "Melancia"
+                    "displayName": "Falso verde"
                   },
                   {
                     "fieldName": "estouro_previsto",
@@ -822,35 +1042,20 @@
                     }
                   },
                   {
-                    "fieldName": "margem_projetada",
-                    "displayName": "Margem projetada",
-                    "format": {
-                      "type": "number-percent",
-                      "decimalPlaces": {
-                        "type": "max",
-                        "places": 1
-                      }
-                    }
-                  },
-                  {
                     "fieldName": "atraso_projetado_dias",
                     "displayName": "Atraso projetado (dias)"
-                  },
-                  {
-                    "fieldName": "termino_projetado",
-                    "displayName": "Término projetado"
                   }
                 ]
               },
               "frame": {
                 "showTitle": true,
-                "title": "Projetos em andamento"
+                "title": "Fila executiva de projetos em andamento"
               }
             }
           },
           "position": {
             "x": 0,
-            "y": 24,
+            "y": 26,
             "width": 12,
             "height": 9
           }
@@ -866,12 +1071,98 @@
         {
           "widget": {
             "name": "titulo-pessoas",
-            "textbox_spec": "# Pessoas\n\n**Tenho gente parada enquanto outro projeto pede gente?** Utilização das últimas 12 semanas e causas dos bloqueios estruturadas por IA."
+            "textbox_spec": "# Capacidade e bloqueios\n\n**Onde existe capacidade ociosa e quais projetos precisam de ajuda?** Janela móvel das últimas 12 semanas."
           },
           "position": {
             "x": 0,
             "y": 0,
             "width": 12,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "filtro-papel",
+            "queries": [
+              {
+                "name": "filtro-papel_query",
+                "query": {
+                  "datasetName": "ds_pessoas",
+                  "fields": [
+                    {
+                      "name": "papel",
+                      "expression": "`papel`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "papel",
+                    "displayName": "Papel",
+                    "queryName": "filtro-papel_query"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Papel"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 4,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "filtro-projeto-pessoas",
+            "queries": [
+              {
+                "name": "filtro-projeto-pessoas_query",
+                "query": {
+                  "datasetName": "ds_pessoas",
+                  "fields": [
+                    {
+                      "name": "projeto",
+                      "expression": "`projeto`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "projeto",
+                    "displayName": "Projeto",
+                    "queryName": "filtro-projeto-pessoas_query"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Projeto"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 8,
             "height": 2
           }
         },
@@ -916,7 +1207,7 @@
                   "scale": {
                     "type": "quantitative"
                   },
-                  "displayName": "Custo da hora parada (top 15)",
+                  "displayName": "Quem concentra o maior custo de capacidade ociosa?",
                   "format": {
                     "type": "number-currency",
                     "currencyCode": "BRL",
@@ -930,13 +1221,13 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Custo da hora parada (top 15)"
+                "title": "Quem concentra o maior custo de capacidade ociosa?"
               }
             }
           },
           "position": {
             "x": 0,
-            "y": 2,
+            "y": 4,
             "width": 6,
             "height": 8
           }
@@ -957,10 +1248,6 @@
                     {
                       "name": "papel",
                       "expression": "`papel`"
-                    },
-                    {
-                      "name": "senioridade",
-                      "expression": "`senioridade`"
                     },
                     {
                       "name": "projeto",
@@ -997,10 +1284,6 @@
                     "displayName": "Papel"
                   },
                   {
-                    "fieldName": "senioridade",
-                    "displayName": "Senioridade"
-                  },
-                  {
                     "fieldName": "projeto",
                     "displayName": "Projeto"
                   },
@@ -1017,11 +1300,11 @@
                   },
                   {
                     "fieldName": "horas_ociosas",
-                    "displayName": "Horas paradas"
+                    "displayName": "Horas ociosas"
                   },
                   {
                     "fieldName": "custo_ocioso",
-                    "displayName": "Custo parado",
+                    "displayName": "Custo ocioso",
                     "format": {
                       "type": "number-currency",
                       "currencyCode": "BRL",
@@ -1036,13 +1319,13 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Pessoas: da mais parada à mais ocupada"
+                "title": "Capacidade disponível por pessoa"
               }
             }
           },
           "position": {
             "x": 6,
-            "y": 2,
+            "y": 4,
             "width": 6,
             "height": 8
           }
@@ -1104,13 +1387,13 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Causas de bloqueio por projeto — últimos 90 dias"
+                "title": "O que mais bloqueou os projetos nos últimos 90 dias?"
               }
             }
           },
           "position": {
             "x": 0,
-            "y": 10,
+            "y": 12,
             "width": 12,
             "height": 9
           }
@@ -1126,13 +1409,77 @@
         {
           "widget": {
             "name": "titulo-fornecedores",
-            "textbox_spec": "# Fornecedores\n\n**Quem promete e não cumpre?** Prazo real versus prometido e entregas atualmente em atraso."
+            "textbox_spec": "# Fornecedores\n\n**Quem está colocando o portfólio em risco?** Cumprimento de prazo e entregas vencidas na data de referência."
           },
           "position": {
             "x": 0,
             "y": 0,
             "width": 12,
             "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "fornecedores-prazo",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_fornecedores",
+                  "fields": [
+                    {
+                      "name": "fornecedor",
+                      "expression": "`fornecedor`"
+                    },
+                    {
+                      "name": "avg(pct_no_prazo)",
+                      "expression": "AVG(`pct_no_prazo`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "y": {
+                  "fieldName": "fornecedor",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  },
+                  "displayName": "fornecedor"
+                },
+                "x": {
+                  "fieldName": "avg(pct_no_prazo)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Quem entrega no prazo?",
+                  "format": {
+                    "type": "number-percent",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 1
+                    }
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Quem entrega no prazo?"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 5,
+            "height": 7
           }
         },
         {
@@ -1147,10 +1494,6 @@
                     {
                       "name": "fornecedor",
                       "expression": "`fornecedor`"
-                    },
-                    {
-                      "name": "grafias_no_cadastro",
-                      "expression": "`grafias_no_cadastro`"
                     },
                     {
                       "name": "entregas",
@@ -1183,10 +1526,6 @@
                     "displayName": "Fornecedor"
                   },
                   {
-                    "fieldName": "grafias_no_cadastro",
-                    "displayName": "Grafias"
-                  },
-                  {
                     "fieldName": "entregas",
                     "displayName": "Entregas"
                   },
@@ -1214,21 +1553,21 @@
                   },
                   {
                     "fieldName": "entregas_em_atraso",
-                    "displayName": "Em atraso hoje"
+                    "displayName": "Em atraso"
                   }
                 ]
               },
               "frame": {
                 "showTitle": true,
-                "title": "Desempenho por fornecedor"
+                "title": "Comparativo de desempenho"
               }
             }
           },
           "position": {
-            "x": 0,
+            "x": 5,
             "y": 2,
-            "width": 12,
-            "height": 6
+            "width": 7,
+            "height": 7
           }
         },
         {
@@ -1311,15 +1650,15 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Entregas em atraso hoje"
+                "title": "Entregas que exigem ação imediata"
               }
             }
           },
           "position": {
             "x": 0,
-            "y": 8,
+            "y": 9,
             "width": 12,
-            "height": 6
+            "height": 7
           }
         }
       ]
@@ -1328,16 +1667,20 @@
   "uiSettings": {
     "theme": {
       "canvasBackgroundColor": {
-        "light": "#F5F6FC",
-        "dark": "#14141A"
+        "light": "#F3F6FA",
+        "dark": "#10141B"
       },
       "widgetBackgroundColor": {
         "light": "#FFFFFF",
-        "dark": "#1E1E24"
+        "dark": "#181E27"
+      },
+      "widgetBorderColor": {
+        "light": "#FFFFFF",
+        "dark": "#181E27"
       },
       "fontColor": {
-        "light": "#14141A",
-        "dark": "#F5F6FC"
+        "light": "#172033",
+        "dark": "#F4F7FB"
       },
       "selectionColor": {
         "light": "#0059DB",

@@ -12,7 +12,11 @@ npm run lint
 npm test
 ```
 
-A tela **Projetos em risco** apresenta os indicadores e a fila de atuação. A tela **Simulador** estima a realocação de pessoas com utilização inferior a 20%. A tela **Perguntar** conecta o usuário ao Genie `Farol · Diretoria` e exibe as consultas geradas. A tabela opcional `gold.score_estouro_30d` é acessada pela rota `/api/score-estouro`; sua ausência não interrompe o app.
+A tela **Projetos em risco** apresenta os indicadores e a fila de atuação, identificando divergências entre o farol informado e o calculado como **Falso verde**, sem emoji. A tela **Simulador** estima a realocação de pessoas com utilização inferior a 20% nas últimas 12 semanas; “disponível” significa baixa utilização média, não ausência de projeto. No dataset atual, Sabrina Vasconcelos e Karina Ferraz são as duas pessoas elegíveis. A tela **Perguntar** conecta o usuário ao Genie `Farol · Diretoria` e exibe as consultas geradas. A tabela opcional `gold.score_estouro_30d` é acessada pela rota `/api/score-estouro`; sua ausência não interrompe o app.
+
+O formulário do simulador usa uma grade responsiva: o projeto de destino recebe
+mais espaço em telas amplas e os campos são reorganizados em telas menores.
+O favicon próprio representa o radar/farol do projeto.
 
 ## Implantação
 

@@ -23,6 +23,11 @@ DATASETS = {
        COUNT_IF(melancia) AS projetos_melancia
 FROM projeto_situacao_atual
 WHERE status = 'em_andamento'"""),
+    "ds_estouro": ("Maiores estouros previstos", """SELECT projeto, cliente, ferramenta, situacao, estouro_previsto
+FROM projeto_situacao_atual
+WHERE status = 'em_andamento' AND estouro_previsto > 0
+ORDER BY estouro_previsto DESC
+LIMIT 12"""),
     "ds_projetos": ("Projetos em andamento hoje", """SELECT projeto_id, projeto, cliente, segmento, ferramenta, situacao, spi, cpi,
        estouro_previsto, margem_projetada, atraso_projetado_dias, termino_projetado,
        farol_do_gerente, farol_calculado,
@@ -101,6 +106,20 @@ def kpi(nome: str, campo: str, titulo: str, formato: dict, position: dict) -> di
         "frame": {"showTitle": True, "title": titulo}}, position, True)
 
 
+def filtro(nome: str, ds: str, campo: str, titulo: str, position: dict) -> dict:
+    query_name = f"{nome}_query"
+    return {"widget": {"name": nome, "queries": [{"name": query_name, "query": {
+        "datasetName": ds,
+        "fields": [{"name": campo, "expression": f"`{campo}`"}],
+        "disaggregated": False,
+    }}], "spec": {
+        "version": 2,
+        "widgetType": "filter-multi-select",
+        "encodings": {"fields": [{"fieldName": campo, "displayName": titulo, "queryName": query_name}]},
+        "frame": {"showTitle": True, "title": titulo},
+    }}, "position": position}
+
+
 def barra(nome: str, ds: str, dimensao: str, medida: str, expressao: str, titulo: str, formato: dict, position: dict, cor: str | None = None) -> dict:
     campos = [(dimensao, f"`{dimensao}`"), (medida, expressao)]
     encodings = {
@@ -127,52 +146,65 @@ def tabela(nome: str, ds: str, colunas: list[tuple], titulo: str, position: dict
 
 def montar() -> dict:
     portfolio = [
-        texto("titulo-portfolio", "# Projeto Farol · Portfólio\n\n**Quais projetos estão atrasados, de quais clientes, e quanto isso custa?** Dados integrados e testados com referência em 16/10/2026.", pos(0, 0, 12, 2)),
-        kpi("kpi-carteira", "carteira", "Carteira em andamento", BRL0, pos(0, 2, 3, 4)),
-        kpi("kpi-spi", "spi", "SPI da carteira", NUM2, pos(3, 2, 3, 4)),
-        kpi("kpi-cpi", "cpi", "CPI da carteira", NUM2, pos(6, 2, 3, 4)),
-        kpi("kpi-estouro", "estouro_previsto", "Estouro previsto", BRL0, pos(9, 2, 3, 4)),
-        kpi("kpi-risco", "projetos_em_risco", "Projetos em risco", {"type": "number-plain"}, pos(0, 6, 4, 4)),
-        kpi("kpi-criticos", "projetos_criticos", "Projetos críticos", {"type": "number-plain"}, pos(4, 6, 4, 4)),
-        kpi("kpi-melancia", "projetos_melancia", "Projetos melancia", {"type": "number-plain"}, pos(8, 6, 4, 4)),
-        barra("estouro-projeto", "ds_projetos", "projeto", "sum(estouro_previsto)", "SUM(`estouro_previsto`)", "Estouro previsto por projeto", BRL, pos(0, 10, 7, 8), "situacao"),
+        texto("titulo-portfolio", "# Projeto Farol · Portfólio\n\n**Onde agir agora para proteger prazo, custo e margem?** Fotografia executiva validada em **16/10/2026**.", pos(0, 0, 12, 2)),
+        filtro("filtro-cliente", "ds_projetos", "cliente", "Cliente", pos(0, 2, 4, 2)),
+        filtro("filtro-situacao", "ds_projetos", "situacao", "Situação", pos(4, 2, 4, 2)),
+        filtro("filtro-ferramenta", "ds_projetos", "ferramenta", "Ferramenta", pos(8, 2, 4, 2)),
+        kpi("kpi-carteira", "carteira", "Carteira em andamento", BRL0, pos(0, 4, 3, 4)),
+        kpi("kpi-estouro", "estouro_previsto", "Estouro previsto", BRL0, pos(3, 4, 3, 4)),
+        kpi("kpi-spi", "spi", "SPI da carteira", NUM2, pos(6, 4, 3, 4)),
+        kpi("kpi-cpi", "cpi", "CPI da carteira", NUM2, pos(9, 4, 3, 4)),
+        kpi("kpi-risco", "projetos_em_risco", "Projetos em risco", {"type": "number-plain"}, pos(0, 8, 3, 4)),
+        kpi("kpi-criticos", "projetos_criticos", "Projetos críticos", {"type": "number-plain"}, pos(3, 8, 3, 4)),
+        kpi("kpi-melancia", "projetos_melancia", "Falsos verdes", {"type": "number-plain"}, pos(6, 8, 3, 4)),
+        kpi("kpi-margem", "margem_projetada", "Margem projetada", PCT, pos(9, 8, 3, 4)),
+        barra("estouro-projeto", "ds_estouro", "projeto", "sum(estouro_previsto)", "SUM(`estouro_previsto`)", "Onde está concentrado o estouro previsto?", BRL, pos(0, 12, 7, 8), "situacao"),
         widget("spi-cpi", "ds_projetos", [("spi", "`spi`"), ("cpi", "`cpi`"), ("situacao", "`situacao`"), ("projeto", "`projeto`")],
             {"version": 3, "widgetType": "scatter", "encodings": {
                 "x": {"fieldName": "spi", "scale": {"type": "quantitative"}, "displayName": "SPI (prazo)"},
                 "y": {"fieldName": "cpi", "scale": {"type": "quantitative"}, "displayName": "CPI (custo)"},
                 "color": {"fieldName": "situacao", "scale": {"type": "categorical", "mappings": CORES}, "displayName": "Situação"}},
-             "frame": {"showTitle": True, "title": "Prazo × custo: cada ponto é um projeto"}}, pos(7, 10, 5, 8), True),
+             "annotations": [
+                 {"type": "vertical-line", "encodings": {"x": {"dataValue": "0.9", "dataType": "DOUBLE"}, "label": {"value": "Limite de prazo"}, "color": {"value": "#F6C344"}}},
+                 {"type": "horizontal-line", "encodings": {"y": {"dataValue": "0.9", "dataType": "DOUBLE"}, "label": {"value": "Limite de custo"}, "color": {"value": "#F6C344"}}},
+             ],
+             "frame": {"showTitle": True, "title": "Quais projetos combinam risco de prazo e custo?"}}, pos(7, 12, 5, 8), True),
         widget("evolucao", "ds_evolucao", [("semana", "`semana`"), ("spi", "`spi`"), ("cpi", "`cpi`")],
             {"version": 3, "widgetType": "line", "encodings": {
                 "x": {"fieldName": "semana", "scale": {"type": "temporal"}, "displayName": "Semana"},
                 "y": {"scale": {"type": "quantitative"}, "fields": [{"fieldName": "spi", "displayName": "SPI"}, {"fieldName": "cpi", "displayName": "CPI"}]}},
-             "frame": {"showTitle": True, "title": "SPI e CPI da carteira, semana a semana"}}, pos(0, 18, 12, 6), True),
-        tabela("tabela-projetos", "ds_projetos", [("projeto", "Projeto"), ("cliente", "Cliente"), ("ferramenta", "Ferramenta"), ("situacao", "Situação"), ("spi", "SPI", NUM2), ("cpi", "CPI", NUM2), ("farol_do_gerente", "Farol do gerente"), ("farol_calculado", "Farol pelo número"), ("melancia", "Melancia"), ("estouro_previsto", "Estouro previsto", BRL), ("margem_projetada", "Margem projetada", PCT), ("atraso_projetado_dias", "Atraso projetado (dias)"), ("termino_projetado", "Término projetado")], "Projetos em andamento", pos(0, 24, 12, 9)),
+             "annotations": [{"type": "horizontal-line", "encodings": {"y": {"dataValue": "0.9", "dataType": "DOUBLE"}, "label": {"value": "Limite de atenção"}, "color": {"value": "#F6C344"}}}],
+             "frame": {"showTitle": True, "title": "A carteira está melhorando ou piorando?"}}, pos(0, 20, 12, 6), True),
+        tabela("tabela-projetos", "ds_projetos", [("projeto", "Projeto"), ("cliente", "Cliente"), ("situacao", "Situação"), ("spi", "SPI", NUM2), ("cpi", "CPI", NUM2), ("farol_do_gerente", "Farol informado"), ("farol_calculado", "Farol calculado"), ("melancia", "Falso verde"), ("estouro_previsto", "Estouro previsto", BRL), ("atraso_projetado_dias", "Atraso projetado (dias)")], "Fila executiva de projetos em andamento", pos(0, 26, 12, 9)),
     ]
     pessoas = [
-        texto("titulo-pessoas", "# Pessoas\n\n**Tenho gente parada enquanto outro projeto pede gente?** Utilização das últimas 12 semanas e causas dos bloqueios estruturadas por IA.", pos(0, 0, 12, 2)),
-        barra("pessoas-ociosas", "ds_pessoas_top", "pessoa", "sum(custo_ocioso)", "SUM(`custo_ocioso`)", "Custo da hora parada (top 15)", BRL, pos(0, 2, 6, 8)),
-        tabela("tabela-pessoas", "ds_pessoas", [("nome", "Pessoa"), ("papel", "Papel"), ("senioridade", "Senioridade"), ("projeto", "Projeto"), ("utilizacao", "Utilização", PCT), ("horas_ociosas", "Horas paradas"), ("custo_ocioso", "Custo parado", BRL)], "Pessoas: da mais parada à mais ocupada", pos(6, 2, 6, 8)),
+        texto("titulo-pessoas", "# Capacidade e bloqueios\n\n**Onde existe capacidade ociosa e quais projetos precisam de ajuda?** Janela móvel das últimas 12 semanas.", pos(0, 0, 12, 2)),
+        filtro("filtro-papel", "ds_pessoas", "papel", "Papel", pos(0, 2, 4, 2)),
+        filtro("filtro-projeto-pessoas", "ds_pessoas", "projeto", "Projeto", pos(4, 2, 8, 2)),
+        barra("pessoas-ociosas", "ds_pessoas_top", "pessoa", "sum(custo_ocioso)", "SUM(`custo_ocioso`)", "Quem concentra o maior custo de capacidade ociosa?", BRL, pos(0, 4, 6, 8)),
+        tabela("tabela-pessoas", "ds_pessoas", [("nome", "Pessoa"), ("papel", "Papel"), ("projeto", "Projeto"), ("utilizacao", "Utilização", PCT), ("horas_ociosas", "Horas ociosas"), ("custo_ocioso", "Custo ocioso", BRL)], "Capacidade disponível por pessoa", pos(6, 4, 6, 8)),
         widget("bloqueios", "ds_bloqueios", [("projeto", "`projeto`"), ("causa_bloqueio", "`causa_bloqueio`"), ("sum(semanas)", "SUM(`semanas`)")],
             {"version": 3, "widgetType": "bar", "encodings": {
                 "y": {"fieldName": "projeto", "scale": {"type": "categorical", "sort": {"by": "x-reversed"}}, "displayName": "Projeto"},
                 "x": {"fieldName": "sum(semanas)", "scale": {"type": "quantitative"}, "displayName": "Semanas com bloqueio"},
                 "color": {"fieldName": "causa_bloqueio", "scale": {"type": "categorical"}, "displayName": "Causa"}},
-             "frame": {"showTitle": True, "title": "Causas de bloqueio por projeto — últimos 90 dias"}}, pos(0, 10, 12, 9)),
+             "frame": {"showTitle": True, "title": "O que mais bloqueou os projetos nos últimos 90 dias?"}}, pos(0, 12, 12, 9)),
     ]
     fornecedores = [
-        texto("titulo-fornecedores", "# Fornecedores\n\n**Quem promete e não cumpre?** Prazo real versus prometido e entregas atualmente em atraso.", pos(0, 0, 12, 2)),
-        tabela("tabela-fornecedores", "ds_fornecedores", [("fornecedor", "Fornecedor"), ("grafias_no_cadastro", "Grafias"), ("entregas", "Entregas"), ("fator_atraso", "Real ÷ prometido", NUM2), ("pct_no_prazo", "No prazo", PCT), ("entregas_em_atraso", "Em atraso hoje")], "Desempenho por fornecedor", pos(0, 2, 12, 6)),
-        tabela("tabela-atrasadas", "ds_atrasadas", [("projeto_id", "Projeto"), ("fornecedor", "Fornecedor"), ("item", "Item"), ("valor", "Valor", BRL), ("data_prometida", "Prometida para"), ("dias_de_atraso", "Dias de atraso")], "Entregas em atraso hoje", pos(0, 8, 12, 6)),
+        texto("titulo-fornecedores", "# Fornecedores\n\n**Quem está colocando o portfólio em risco?** Cumprimento de prazo e entregas vencidas na data de referência.", pos(0, 0, 12, 2)),
+        barra("fornecedores-prazo", "ds_fornecedores", "fornecedor", "avg(pct_no_prazo)", "AVG(`pct_no_prazo`)", "Quem entrega no prazo?", PCT, pos(0, 2, 5, 7)),
+        tabela("tabela-fornecedores", "ds_fornecedores", [("fornecedor", "Fornecedor"), ("entregas", "Entregas"), ("fator_atraso", "Real ÷ prometido", NUM2), ("pct_no_prazo", "No prazo", PCT), ("entregas_em_atraso", "Em atraso")], "Comparativo de desempenho", pos(5, 2, 7, 7)),
+        tabela("tabela-atrasadas", "ds_atrasadas", [("projeto_id", "Projeto"), ("fornecedor", "Fornecedor"), ("item", "Item"), ("valor", "Valor", BRL), ("data_prometida", "Prometida para"), ("dias_de_atraso", "Dias de atraso")], "Entregas que exigem ação imediata", pos(0, 9, 12, 7)),
     ]
     pagina = lambda nome, titulo, layout: {"name": nome, "displayName": titulo, "pageType": "PAGE_TYPE_CANVAS", "layoutVersion": "GRID_V1", "layout": layout}
     return {
         "datasets": [dataset(nome) for nome in DATASETS],
         "pages": [pagina("portfolio", "Portfólio", portfolio), pagina("pessoas", "Pessoas", pessoas), pagina("fornecedores", "Fornecedores", fornecedores)],
         "uiSettings": {"theme": {
-            "canvasBackgroundColor": {"light": "#F5F6FC", "dark": "#14141A"},
-            "widgetBackgroundColor": {"light": "#FFFFFF", "dark": "#1E1E24"},
-            "fontColor": {"light": "#14141A", "dark": "#F5F6FC"},
+            "canvasBackgroundColor": {"light": "#F3F6FA", "dark": "#10141B"},
+            "widgetBackgroundColor": {"light": "#FFFFFF", "dark": "#181E27"},
+            "widgetBorderColor": {"light": "#FFFFFF", "dark": "#181E27"},
+            "fontColor": {"light": "#172033", "dark": "#F4F7FB"},
             "selectionColor": {"light": "#0059DB", "dark": "#22C2F4"},
             "visualizationColors": ["#0059DB", "#22C2F4", "#F6C344", "#FF5F46", "#9B6BDB", "#3ECF8E", "#6E7180"],
             "widgetHeaderAlignment": "LEFT", "widgetCornerRadius": 12,

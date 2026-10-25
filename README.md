@@ -5,7 +5,9 @@ bronze e publicar sete tabelas silver e três tabelas gold em um pipeline
 Lakeflow declarativo.
 
 O bundle também publica o dashboard AI/BI **Projeto Farol · Portfólio**, com
-visões executivas de portfólio, pessoas e fornecedores.
+visões executivas de portfólio, pessoas e fornecedores. O layout usa filtros
+por cliente, situação, ferramenta, papel e projeto, cores semânticas e limites
+de referência para SPI/CPI.
 
 O diretório `minha-torre/` contém um bundle independente do Databricks App
 **Projeto Farol**, com as telas Projetos em risco, Simulador de realocação e Perguntar.
