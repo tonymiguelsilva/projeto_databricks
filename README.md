@@ -303,12 +303,6 @@ aprendizado foi tratar o Lakehouse não apenas como armazenamento, mas como uma
 plataforma completa: da ingestão de arquivos heterogêneos até uma experiência
 executiva confiável e conversacional.
 
-## Créditos
-
-Agradecimento especial ao **professor Luciano** por compartilhar o conhecimento,
-conduzir o aprendizado e fornecer a base que inspirou o desenvolvimento e a
-adaptação deste projeto.
-
 ---
 
 Desenvolvido por [Tony Miguel Silva](https://github.com/tonymiguelsilva).
