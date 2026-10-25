@@ -215,7 +215,6 @@ Aplicação React e TypeScript construída com AppKit, contendo:
 ```text
 projeto_databricks/
 ├── config/          # Exemplo versionável da configuração local
-├── llm/             # Prompts operacionais adaptados para Codex
 ├── minha-torre/     # Databricks App independente em React/TypeScript
 ├── resources/       # Job, pipeline, dashboard e Genie declarados como código
 ├── scripts/         # Geradores, publicação, execução SQL e sincronização
